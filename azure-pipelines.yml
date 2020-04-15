@@ -37,11 +37,12 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+          latest
     - task: Kubernetes@1
       inputs:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: 'aks'
-        namespace: 'auth-service'
+        namespace: 'default'
         command: 'apply'
         arguments: '-f ./deploy.yaml'
         secretType: 'dockerRegistry'
