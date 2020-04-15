@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,11 @@ namespace Auth.Service.Controllers
         [HttpGet]
         public async Task<IActionResult> Index() {
             return Ok("Auth.Service working");
+        }
+
+        [HttpGet("Test")]
+        public async Task<IActionResult> Test() {
+            return Ok(Environment.GetEnvironmentVariable("Test"));
         }
     }
 }
