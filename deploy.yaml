@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: vndmacacrdd9f.azurecr.io/auth-service
+        image: vndmacacrdd9f.azurecr.io/authservice
         ports:
         - containerPort: 80
       imagePullSecrets:
