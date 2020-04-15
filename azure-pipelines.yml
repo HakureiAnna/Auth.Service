@@ -38,13 +38,10 @@ stages:
         tags: |
           $(tag)
           latest
-    - task: Kubernetes@1
+    - task: KubernetesManifest@0
       inputs:
-        connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'aks'
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks'
         namespace: 'default'
-        command: 'apply'
-        arguments: '-f ./deploy.yaml'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Azure Container Registry'
-
+        manifests: './deploy.yaml'
+        containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
