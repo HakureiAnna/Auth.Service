@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: vndmacacrdd9f.azurecr.io/authservice:#{Build.BuildId}#
-        imagePullPolicy: Always
+        image: vndmacacrdd9f.azurecr.io/authservice:placeholdertag
         ports:
         - containerPort: 80
       imagePullSecrets:
