@@ -7,6 +7,7 @@ namespace Auth.Service.Controllers
     [Route("api/[controller]")]
     public class AuthController: ControllerBase 
     {
+        [HttpGet]
         public async Task<IActionResult> Index() {
             return Ok("Auth.Service working");
         }
