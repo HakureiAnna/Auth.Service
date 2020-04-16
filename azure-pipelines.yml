@@ -47,6 +47,7 @@ stages:
         forceUpdateConfigMap: true
         configMapArguments: |
           --from-literal=payment_server=$(payment_server) --from-literal=topup_server=$(topup_server)
+
     - task: KubernetesManifest@0
       displayName: Creating or updating deployment
       inputs:
@@ -54,4 +55,4 @@ stages:
         kubernetesServiceConnection: 'aks'
         namespace: 'default'
         manifests: 'Manifests/deploy.yaml'
-        containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
+        containers: 'vndmacacrdd9f.azurecr.io/$(imageRepository):$(tag)'
