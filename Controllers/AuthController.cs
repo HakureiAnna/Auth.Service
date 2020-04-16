@@ -15,7 +15,12 @@ namespace Auth.Service.Controllers
 
         [HttpGet("Test")]
         public async Task<IActionResult> Test() {
-            return Ok(Environment.GetEnvironmentVariable("Test"));
+            return Ok(
+                new {
+                    other_server = Environment.GetEnvironmentVariable("other_server"),
+                    another_server = Environment.GetEnvironmentVariable("another_server")
+                }
+            );
         }
     }
 }

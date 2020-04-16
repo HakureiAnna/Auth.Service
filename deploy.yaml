@@ -17,7 +17,7 @@ spec:
         image: vndmacacrdd9f.azurecr.io/authservice:placeholdertag
         envFrom:
         - configMapRef:
-          name: auth-service
+            name: auth-service
         ports:
         - containerPort: 80
       imagePullSecrets:
