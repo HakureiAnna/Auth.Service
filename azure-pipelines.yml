@@ -26,6 +26,7 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
+      displayName: Building and uploading Docker image
       inputs:
         containerRegistry: 'acr'
         repository: $(imageRepository)
