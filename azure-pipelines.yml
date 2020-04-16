@@ -42,7 +42,6 @@ stages:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: 'aks'
         namespace: 'default'
-        command: 'apply'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
         configMapName: 'auth-service'
