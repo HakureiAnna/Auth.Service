@@ -17,8 +17,8 @@ namespace Auth.Service.Controllers
         public async Task<IActionResult> Test() {
             return Ok(
                 new {
-                    other_server = Environment.GetEnvironmentVariable("other_server"),
-                    another_server = Environment.GetEnvironmentVariable("another_server")
+                    payment_server = Environment.GetEnvironmentVariable("payment_server"),
+                    topup_server = Environment.GetEnvironmentVariable("topup_server")
                 }
             );
         }
