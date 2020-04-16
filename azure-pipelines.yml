@@ -25,6 +25,17 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+    - task: Kubernetes@1
+      displayName: Cleaning up previous deployment
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aks'
+        namespace: 'default'
+        command: 'delete'
+        arguments: '-f Manifests/deploy.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+
     - task: Docker@2
       displayName: Building and uploading Docker image
       inputs:
@@ -34,16 +45,6 @@ stages:
         Dockerfile: $(dockerfilePath)
         tags: |
           $(tag)
-
-    - task: Kubernetes@1
-      inputs:
-        connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'aks'
-        namespace: 'default'
-        command: 'delete'
-        arguments: '-f Manifests/deploy.yaml'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Azure Container Registry'
 
     - task: Kubernetes@1
       displayName: Setting up environment variables
