@@ -49,7 +49,7 @@ stages:
         configMapName: 'auth-service'
         forceUpdateConfigMap: true
         configMapArguments: |
-          --from-literal=other_server=$(other_server) --from-literal=another_server=$(another_server)
+          --from-literal=payment_server=$(payment_server) --from-literal=topup_server=$(topup_server)
     - task: KubernetesManifest@0
       displayName: Creating or updating deployment
       inputs:
