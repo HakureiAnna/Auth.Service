@@ -48,6 +48,16 @@ stages:
         configMapArguments: |
           --from-literal=payment_server=$(payment_server) --from-literal=topup_server=$(topup_server)
 
+    - task: Kubernetes@1
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aks'
+        namespace: 'default'
+        command: 'delete'
+        arguments: '-f Manifests/deploy.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+
     - task: KubernetesManifest@0
       displayName: Creating or updating deployment
       inputs:
