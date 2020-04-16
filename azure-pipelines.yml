@@ -39,6 +39,7 @@ stages:
           $(tag)
 
     - task: Kubernetes@1
+      displayName: Setting up environment variables
       inputs:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: 'aks'
@@ -50,6 +51,7 @@ stages:
         configMapArguments: |
           --from-literal=other_server=$(other_server) --from-literal=another_server=$(another_server)
     - task: KubernetesManifest@0
+      displayName: Creating or updating deployment
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aks'
