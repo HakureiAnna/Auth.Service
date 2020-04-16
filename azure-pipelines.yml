@@ -9,10 +9,7 @@ resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'c985d33a-59ae-44a0-bf5c-67f9d055984d'
   imageRepository: 'authservice'
-  containerRegistry: 'vndmacacrdd9f.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
   
@@ -29,12 +26,11 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
       inputs:
-        command: buildAndPush
+        containerRegistry: 'acr'
         repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        command: 'buildAndPush'
+        Dockerfile: $(dockerfilePath)
         tags: |
           $(tag)
 
