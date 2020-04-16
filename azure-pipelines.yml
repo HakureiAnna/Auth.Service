@@ -37,7 +37,18 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-          latest
+    - task: Kubernetes@1
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aks'
+        namespace: 'default'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+        configMapName: 'auth-service'
+        forceUpdateConfigMap: true
+        configMapArguments: |
+          --from-literal=other_server=$(other_server)
+          --from-literal=another_server=$(another_server)
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
