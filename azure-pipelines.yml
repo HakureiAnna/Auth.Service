@@ -37,22 +37,31 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
     - task: Kubernetes@1
       inputs:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: 'aks'
-        namespace: 'default'
+        command: 'apply'
+        arguments: '-f Manifests/namespace.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+
+    - task: Kubernetes@1
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aks'
+        namespace: 'auth-service'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
         configMapName: 'auth-service'
         forceUpdateConfigMap: true
         configMapArguments: |
-          --from-literal=other_server=$(other_server)
-          --from-literal=another_server=$(another_server)
+          --from-literal=other_server=$(other_server) --from-literal=another_server=$(another_server)
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aks'
-        namespace: 'default'
-        manifests: './deploy.yaml'
+        namespace: 'auth-service'
+        manifests: 'Manifests/deploy.yaml'
         containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
