@@ -55,4 +55,4 @@ stages:
         kubernetesServiceConnection: 'aks'
         namespace: 'default'
         manifests: 'Manifests/deploy.yaml'
-        containers: 'vndmacacrdd9f.azurecr.io/$(imageRepository):$(tag)'
+        containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
