@@ -36,6 +36,16 @@ stages:
           $(tag)
 
     - task: Kubernetes@1
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aks'
+        namespace: 'default'
+        command: 'delete'
+        arguments: '-f Manifests/deploy.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+
+    - task: Kubernetes@1
       displayName: Setting up environment variables
       inputs:
         connectionType: 'Kubernetes Service Connection'
@@ -47,8 +57,6 @@ stages:
         forceUpdateConfigMap: true
         configMapArguments: |
           --from-literal=payment_server=$(payment_server) --from-literal=topup_server=$(topup_server)
-
-
 
     - task: KubernetesManifest@0
       displayName: Creating or updating deployment
