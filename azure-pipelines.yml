@@ -42,16 +42,7 @@ stages:
       inputs:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: 'aks'
-        command: 'apply'
-        arguments: '-f Manifests/namespace.yaml'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Azure Container Registry'
-
-    - task: Kubernetes@1
-      inputs:
-        connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'aks'
-        namespace: 'auth-service'
+        namespace: 'default'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
         configMapName: 'auth-service'
@@ -62,6 +53,6 @@ stages:
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aks'
-        namespace: 'auth-service'
+        namespace: 'default'
         manifests: 'Manifests/deploy.yaml'
         containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
