@@ -9,13 +9,13 @@ namespace Auth.Service.Controllers
     [Route("api/[controller]")]
     public class AuthController: ControllerBase 
     {
-        [HttpGet]
-        public IActionResult Index() 
+        [HttpGet("status")]
+        public IActionResult Status() 
         {
             return Ok("Auth.Service working");
         }
 
-        [HttpPost]
+        [HttpPost("authorizeUse")]
         public IActionResult AuthorizeUse([FromBody]AuthorizeUseRequest request) 
         {
             return Ok(request);
