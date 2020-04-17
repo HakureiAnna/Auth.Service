@@ -15,10 +15,10 @@ namespace Auth.Service.Controllers
             return Ok("Auth.Service working");
         }
 
-        [HttpPost("receiveOrder")]
-        public IActionResult ReceiveOrder([FromBody]Order order) 
+        [HttpPost]
+        public IActionResult AuthorizeUse([FromBody]AuthorizeUseRequest request) 
         {
-            return Ok(order);            
+            return Ok(request);
         }
     }
 }
