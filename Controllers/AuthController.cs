@@ -15,8 +15,8 @@ namespace Auth.Service.Controllers
             return Ok("Auth.Service working");
         }
 
-        [HttpPost("authorizeUse")]
-        public IActionResult AuthorizeUse([FromBody]AuthorizeUseRequest request) 
+        [HttpPost("authorizeUser")]
+        public IActionResult AuthorizeUser([FromBody]AuthorizeUseRequest request) 
         {
             return Ok(request);
         }
