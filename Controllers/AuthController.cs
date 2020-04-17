@@ -10,14 +10,13 @@ namespace Auth.Service.Controllers
     public class AuthController: ControllerBase 
     {
         [HttpGet]
-        public async Task<IActionResult> Index() 
+        public IActionResult Index() 
         {
             return Ok("Auth.Service working");
         }
 
         [HttpPost("receiveOrder")]
-        [Produces("json")]
-        public async Task<IActionResult> ReceiveOrder([FromBody]Order order) 
+        public IActionResult ReceiveOrder([FromBody]Order order) 
         {
             return Ok(order);            
         }
