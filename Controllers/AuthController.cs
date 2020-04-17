@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Auth.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auth.Service.Controllers 
@@ -9,18 +10,16 @@ namespace Auth.Service.Controllers
     public class AuthController: ControllerBase 
     {
         [HttpGet]
-        public async Task<IActionResult> Index() {
+        public async Task<IActionResult> Index() 
+        {
             return Ok("Auth.Service working");
         }
 
-        [HttpGet("Test")]
-        public async Task<IActionResult> Test() {
-            return Ok(
-                new {
-                    payment_server = Environment.GetEnvironmentVariable("payment_server"),
-                    topup_server = Environment.GetEnvironmentVariable("topup_server")
-                }
-            );
+        [HttpPost("receiveOrder")]
+        [Produces("json")]
+        public async Task<IActionResult> ReceiveOrder([FromBody]Order order) 
+        {
+            return Ok(order);            
         }
     }
 }
