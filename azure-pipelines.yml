@@ -17,16 +17,15 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Build
-  displayName: Build and push stage
+- stage: Cleanup
+  displayName: Clean up previous resources
   jobs:  
-  - job: Build
-    displayName: Build
+  - job: Cleanup
+    displayName: Cleanup job
     pool:
       vmImage: $(vmImageName)
     steps:
     - task: Kubernetes@1
-      displayName: Cleaning up previous deployment
       inputs:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: 'aks'
@@ -36,6 +35,15 @@ stages:
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
 
+- stage: Build
+  condition: always()
+  displayName: Build and push stage
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
     - task: Docker@2
       displayName: Building and uploading Docker image
       inputs:
@@ -67,3 +75,44 @@ stages:
         namespace: 'default'
         manifests: 'Manifests/deploy.yaml'
         containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
+
+- stage: Build
+  condition: always()
+  displayName: Build and push stage
+  jobs:    
+  - job: Build
+    displayName: Build job        
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Building and uploading Docker image
+      inputs:
+        containerRegistry: 'acr'
+        repository: $(imageRepository)
+        command: 'buildAndPush'
+        Dockerfile: $(dockerfilePath)
+        tags: |
+          $(tag)
+
+    - task: Kubernetes@1
+      displayName: Setting up environment variables
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'aks'
+        namespace: 'default'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
+        configMapName: 'testdriver'
+        forceUpdateConfigMap: true
+        configMapArguments: |
+          --from-literal=pickshop_server=$(pickshop_server) --from-literal=api_openTheDoor=$(api_openTheDoor)
+
+    - task: KubernetesManifest@0
+      displayName: Creating or updating deployment
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks'
+        namespace: 'default'
+        manifests: 'Manifests/deploy.yaml'
+        containers: 'vndmacacrdd9f.azurecr.io/testdriver:$(tag)'
