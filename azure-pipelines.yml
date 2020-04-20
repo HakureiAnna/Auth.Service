@@ -62,7 +62,7 @@ stages:
         namespace: 'default'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
-        configMapName: 'testdriver'
+        configMapName: 'auth-service'
         forceUpdateConfigMap: true
         configMapArguments: |
           --from-literal=pickshop_server=$(pickshop_server) --from-literal=api_openTheDoor=$(api_openTheDoor)
@@ -74,4 +74,4 @@ stages:
         kubernetesServiceConnection: 'aks'
         namespace: 'default'
         manifests: 'Manifests/deploy.yaml'
-        containers: 'vndmacacrdd9f.azurecr.io/testdriver:$(tag)'
+        containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
