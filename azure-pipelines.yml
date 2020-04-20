@@ -38,47 +38,6 @@ stages:
 - stage: Build
   condition: always()
   displayName: Build and push stage
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Building and uploading Docker image
-      inputs:
-        containerRegistry: 'acr'
-        repository: $(imageRepository)
-        command: 'buildAndPush'
-        Dockerfile: $(dockerfilePath)
-        tags: |
-          $(tag)
-
-    - task: Kubernetes@1
-      displayName: Setting up environment variables
-      inputs:
-        connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'aks'
-        namespace: 'default'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Azure Container Registry'
-        configMapName: 'auth-service'
-        forceUpdateConfigMap: true
-        configMapArguments: |
-          --from-literal=payment_server=$(payment_server) --from-literal=topup_server=$(topup_server)
-
-    - task: KubernetesManifest@0
-      displayName: Creating or updating deployment
-      inputs:
-        action: 'deploy'
-        kubernetesServiceConnection: 'aks'
-        namespace: 'default'
-        manifests: 'Manifests/deploy.yaml'
-        containers: 'vndmacacrdd9f.azurecr.io/authservice:$(tag)'
-
-- stage: Build
-  condition: always()
-  displayName: Build and push stage
   jobs:    
   - job: Build
     displayName: Build job        
