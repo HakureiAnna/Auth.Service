@@ -77,5 +77,11 @@ namespace Auth.Service.Controllers
                 return BadRequest("Member already exists");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMember(string id)
+        {
+            return Ok(await _memberService.GetMemberAsync(id));
+        }
     }
 }

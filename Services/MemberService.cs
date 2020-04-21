@@ -35,7 +35,7 @@ namespace Auth.Service.Services
             return count > 0;
         }
 
-        public async Task<bool> CheckMemberExists(string id) 
+        public async Task<bool> CheckMemberExistsAsync(string id) 
         {
             var sqlQuery = $"SELECT * FROM c WHERE c.id=\"{id}\"";
             var queryDefinition = new QueryDefinition(sqlQuery);
@@ -51,10 +51,24 @@ namespace Auth.Service.Services
         }
 
         public async Task<bool> AddMemberAsync(Member member) {
-            if (await CheckMemberExists(member.Id))
+            if (await CheckMemberExistsAsync(member.Id))
                 return false;
             await _container.CreateItemAsync<Member>(member);
             return true;
+        }
+
+        public async Task<Member> GetMemberAsync(string id) {
+            var sqlQuery = $"SELECT * FROM c WHERE c.id=\"{id}\"";
+            var queryDefinition = new QueryDefinition(sqlQuery);
+            var query = _container.GetItemQueryIterator<Member>(queryDefinition);
+            Member member = null;
+            while (query.HasMoreResults)
+            {
+                var members = await query.ReadNextAsync();
+                foreach (var m in members) 
+                    member = m;
+            }
+            return member;
         }
     }
 }

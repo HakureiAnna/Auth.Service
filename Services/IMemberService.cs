@@ -7,8 +7,10 @@ namespace Auth.Service.Services
     {
         bool CheckValidMember(string id, string passCode);
         
-        Task<bool> CheckMemberExists(string id);
+        Task<bool> CheckMemberExistsAsync(string id);
 
         Task<bool> AddMemberAsync(Member member);
+
+        Task<Member> GetMemberAsync(string id);
     }
 }
