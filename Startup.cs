@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Auth.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,6 +40,27 @@ namespace Auth.Service
             });
 
             services.AddControllers();
+
+            services.AddSingleton<IMemberService>(InitializeCosmosAsync()
+                .GetAwaiter()
+                .GetResult());
+        }
+
+        public static async Task<MemberService> InitializeCosmosAsync()
+        {
+            var connStr = Environment.GetEnvironmentVariable("cosmos_connStr");
+            var databaseName = Environment.GetEnvironmentVariable("cosmos_db");
+            var containerName = Environment.GetEnvironmentVariable("container_member");
+
+            CosmosClientBuilder clientBuilder = new CosmosClientBuilder(connStr);
+            CosmosClient client = clientBuilder
+                .WithConnectionModeDirect()
+                .Build();
+            var memberService = new MemberService(client, databaseName, containerName);
+            DatabaseResponse database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+            await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+
+            return memberService;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,8 +2,11 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Auth.Service.Models;
+using Auth.Service.Models.Communication;
+using Auth.Service.Models.DB;
+using Auth.Service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos.Fluent;
 using Newtonsoft.Json;
 
 namespace Auth.Service.Controllers 
@@ -13,10 +16,15 @@ namespace Auth.Service.Controllers
     public class AuthController: ControllerBase 
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IMemberService _memberService;
 
-        public AuthController(IHttpClientFactory clientFactory) 
+        public AuthController(
+            IHttpClientFactory clientFactory,
+            IMemberService memberService
+        ) 
         {
             _clientFactory = clientFactory;
+            _memberService = memberService;
         }
 
         [HttpGet("status")]
@@ -54,6 +62,19 @@ namespace Auth.Service.Controllers
             }
             else {
                 return StatusCode(500);       
+            }
+        }
+
+        [HttpPost("addMember")]
+        public async Task<IActionResult> AddMember([FromBody]Member member)
+        {
+            var validInsertion = await _memberService.AddMemberAsync(member);
+            if (validInsertion) 
+            {
+                return Ok("Member added successfully");
+            } else 
+            {
+                return BadRequest("Member already exists");
             }
         }
     }
