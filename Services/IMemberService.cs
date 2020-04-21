@@ -5,12 +5,13 @@ namespace Auth.Service.Services
 {
     public interface IMemberService
     {
-        bool CheckValidMember(string id, string passCode);
-        
+        Task<Member> GetMemberWithCredentialsAsync(string id, string password);
+
         Task<bool> CheckMemberExistsAsync(string id);
 
-        Task<bool> AddMemberAsync(Member member);
+        Task<bool> AddMemberAsync(AddMember member);
 
         Task<Member> GetMemberAsync(string id);
+
     }
 }

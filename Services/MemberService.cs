@@ -22,38 +22,40 @@ namespace Auth.Service.Services
             _containerName = containerName;
         }
 
-        public bool CheckValidMember(string userId, string passCode) 
+        public async Task<Member> GetMemberWithCredentialsAsync(string userId, string password) 
         {
-            var sqlQuery = $"SELECT * FROM MEMBER m WHERE m.USER_ID={userId} AND PASS_CODE={passCode}";
+            var sqlQuery = $"SELECT * FROM c WHERE c.id=\"{userId}\" AND c.password=\"{password}\"";
             var queryDefinition = new QueryDefinition(sqlQuery);
             var query = _container.GetItemQueryIterator<Member>(queryDefinition);
-            int count = 0;
+            Member member = null;
             while (query.HasMoreResults)
             {
-                count++;
+                var result = await query.ReadNextAsync();
+                foreach (var m in result)
+                    member = m;
             }
-            return count > 0;
+            return member;
         }
+
 
         public async Task<bool> CheckMemberExistsAsync(string id) 
         {
-            var sqlQuery = $"SELECT * FROM c WHERE c.id=\"{id}\"";
+                var sqlQuery = $"SELECT * FROM c WHERE c.id=\"{id}\"";
             var queryDefinition = new QueryDefinition(sqlQuery);
             var query = _container.GetItemQueryIterator<Member>(queryDefinition);
             int count = 0;
-            Console.WriteLine("test");
             while (query.HasMoreResults)
             {
-                var member = await query.ReadNextAsync();
-                count += member.Count;
+                var result = await query.ReadNextAsync();
+                count += result.Count;
             }
             return count > 0;
         }
 
-        public async Task<bool> AddMemberAsync(Member member) {
+        public async Task<bool> AddMemberAsync(AddMember member) {
             if (await CheckMemberExistsAsync(member.Id))
                 return false;
-            await _container.CreateItemAsync<Member>(member);
+            await _container.CreateItemAsync<AddMember>(member);
             return true;
         }
 

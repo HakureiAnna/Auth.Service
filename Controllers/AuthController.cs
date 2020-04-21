@@ -36,6 +36,15 @@ namespace Auth.Service.Controllers
         [HttpPost("authorizeUser")]
         public async Task<IActionResult> AuthorizeUser([FromBody]AuthorizeUseRequest request) 
         {         
+            // validate user and obtain data for openTheDoor request
+            var member = await _memberService.GetMemberWithCredentialsAsync(request.UserId, request.Password);
+            if (member == null)
+            {
+                Console.WriteLine($"Member ID: {request.UserId} cannot be verified");
+                return BadRequest("user cannot be verified");
+            }
+
+            // send request to pickshop to open the door
             var url = "http://" + 
                 Environment.GetEnvironmentVariable("pickshop_server") + "/" +
                 Environment.GetEnvironmentVariable("api_openTheDoor");
@@ -45,28 +54,36 @@ namespace Auth.Service.Controllers
                 url
             );
 
+            var otdRequest = new OpenTheDoorRequest {
+                UserId = member.Id,
+                UserType = member.UserType.ToString()
+            };
+
             requestMessage.Headers.Add("Accept", "application/json");
             requestMessage.Content = new StringContent(
-                JsonConvert.SerializeObject(request),
+                JsonConvert.SerializeObject(otdRequest),
                 Encoding.UTF8,
                 "application/json"
             );
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(requestMessage);
 
+            // return result to test driver
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<OpenTheDoorResponse>(responseString);
+                Console.WriteLine($"Door Status: {result.Status}");
                 return Ok(result);
             }
             else {
-                return StatusCode(500);       
+                Console.WriteLine("Unable to communicate with PickShop");
+                return BadRequest("having problem communication with pickshop");       
             }
         }
 
         [HttpPost("addMember")]
-        public async Task<IActionResult> AddMember([FromBody]Member member)
+        public async Task<IActionResult> AddMember([FromBody]AddMember member)
         {
             var validInsertion = await _memberService.AddMemberAsync(member);
             if (validInsertion) 
