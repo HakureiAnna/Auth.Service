@@ -65,7 +65,7 @@ stages:
         configMapName: 'auth-service'
         forceUpdateConfigMap: true
         configMapArguments: |
-          --from-literal=pickshop_server=$(pickshop_server) --from-literal=api_openTheDoor=$(api_openTheDoor)
+          --from-literal=pickshop_server=$(pickshop_server) --from-literal=api_openTheDoor=$(api_openTheDoor) --from-literal=cosmos_connStr=$(cosmos_connStr) --from-literal=cosmos_db=$(cosmos_db) --from-literal=container_member=$(container_member)
 
     - task: KubernetesManifest@0
       displayName: Creating or updating deployment
